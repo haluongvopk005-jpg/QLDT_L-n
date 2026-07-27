@@ -1,10 +1,24 @@
 package com.phonemanager.util;
 
-/**
- * TODO [HOÀI] — PHẦN MÃ NGUỒN ĐÃ ĐƯỢC XÓA.
- *
- * Bổ sung tiện ích sinh mã nghiệp vụ không trùng cho phiếu nhập/hóa đơn.
- */
-public class BusinessCodeGenerator {
-    // TODO [HOÀI]: Viết lại hàm sinh mã theo tiền tố, thời gian và thành phần ngẫu nhiên.
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+import java.util.UUID;
+
+/** Tạo mã nghiệp vụ ngắn, dễ đọc và không trùng khi nhiều tác vụ chạy đồng thời. */
+public final class BusinessCodeGenerator {
+    private static final DateTimeFormatter TIME_FORMAT =
+            DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS");
+
+    private BusinessCodeGenerator() {
+    }
+
+    public static String create(String prefix) {
+        String safePrefix = prefix == null ? "" : prefix.trim().toUpperCase(Locale.ROOT);
+        String randomPart = UUID.randomUUID().toString()
+                .replace("-", "")
+                .substring(0, 6)
+                .toUpperCase(Locale.ROOT);
+        return safePrefix + LocalDateTime.now().format(TIME_FORMAT) + randomPart;
+    }
 }
